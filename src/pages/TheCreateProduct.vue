@@ -55,11 +55,13 @@
           variant="outlined"
           required
           bg-color="white"
+          maxLength="350"
         ></v-text-field>
       </v-col>
     </v-row>
     <v-btn
-      class="full-width mt-4"
+      class="mt-4"
+      block
       v-bind="{ loading }"
       color="primary"
       @click="submit"

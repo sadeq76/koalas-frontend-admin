@@ -4,7 +4,7 @@ export default function auth(router) {
       return { name: "login" };
     }
     if (to.name === "login" && localStorage.getItem("token")) {
-      return { name: "dashboard" };
+      return { name: "customers" };
     }
   });
 }

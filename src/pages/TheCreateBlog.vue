@@ -13,6 +13,7 @@
       label="Summary"
       v-model="summary"
       variant="outlined"
+      maxLength="100"
       required
       bg-color="white"
     ></v-text-field>
@@ -46,7 +47,8 @@
       </v-col>
     </v-row>
     <v-btn
-      class="full-width mt-4"
+      class="mt-4"
+      block
       v-bind="{ loading }"
       color="primary"
       @click="submit"
@@ -58,17 +60,16 @@
 
 <script setup>
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { fetchData } from "../helpers/functions";
 import { ref } from "vue";
-import { useStore } from "../store";
+import { useRequest } from "../store/request";
 
-const store = useStore();
 const loading = ref(false);
 
 const title = ref("");
 const summary = ref("");
 let cover = ref([]);
 let video = ref([]);
+const request = useRequest();
 const editor = ClassicEditor;
 const editorData = ref("<p>متن بلاگ را در اینجا تایپ کنید</p>");
 const editorConfig = {
@@ -95,16 +96,14 @@ const submit = async function () {
     body.append("video", video.value[0]);
   }
 
-  await fetchData({ url: "/blog/", method: "POST", body })
+  request
+    .fetchData({ url: "/blog/", method: "POST", body })
     .then(() => {
       title.value = "";
       summary.value = "";
       editorData.value = "";
       cover.value = "";
       video.value = "";
-    })
-    .catch((error) => {
-      store.toggleSnackbar({ status: "error", message: error });
     })
     .finally(() => (loading.value = false));
 };

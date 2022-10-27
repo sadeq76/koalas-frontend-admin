@@ -10,10 +10,9 @@ export const useStore = defineStore({
     snackbarTimeout: 3000,
     isLoggedIn: !!localStorage.getItem("token"),
     categories: [
-      { title: "پودر و دانه قهوه", value: "bean" },
-      { title: "قهوه های تک خواستگاه", value: "single" },
-      { title: "قهوه های ترکیبی", value: "multi" },
-      { title: "قهوه های ترک", value: "turk" },
+      { title: "قهوه های تک خواستگاه", value: "bean-single" },
+      { title: "قهوه های ترکیبی", value: "bean-multi" },
+      { title: "قهوه های ترک", value: "bean-turk" },
       { title: "قهوه فوری", value: "powder" },
       { title: "سایر محصولات", value: "other" },
       { title: "اکسسوری های قهوه", value: "accessories" },

@@ -7,7 +7,7 @@
       max-width="500px"
       variant="outlined"
     >
-      <v-form>
+      <v-form @submit.prevent>
         <h1 class="text-h1 font-weight-black mb-8">log in</h1>
         <v-text-field
           class="mb-4"
@@ -15,12 +15,14 @@
           v-model="inputText"
           variant="outlined"
           required
+          @keydown.enter="submit"
         ></v-text-field>
         <v-btn
-          class="full-width"
+          block
           v-bind="{ loading }"
           color="primary"
           @click="submit"
+          :disabled="!isValid"
         >
           next
         </v-btn>
@@ -61,6 +63,12 @@ const OTPRules = [
   (v) => v.length == 11 || "OTP must be 4 characters",
 ];
 
+const isValid = computed(() =>
+  step.value === 1
+    ? inputText.value.length === 11
+    : inputText.value.length === 4
+);
+
 const submit = function () {
   if (step.value === 1) {
     sendPhoneNumber();
@@ -97,7 +105,7 @@ const sendOTP = async function () {
         store.isLoggedIn = true;
         localStorage.setItem("token", response.token);
         router.push({
-          name: "dashboard",
+          name: "customers",
         });
       } else {
         store.toggleSnackbar({ status: "error", message: "You are not admin" });

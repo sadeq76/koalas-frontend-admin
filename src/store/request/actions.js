@@ -1,7 +1,7 @@
 import { useStore } from "../../store";
 export default {
   fetchData({ headers, url, params, method = "GET", body }) {
-    const snackbar = useStore();
+    const store = useStore();
     this.addHeaders(headers || {});
     this.addParams(params || {});
 
@@ -18,7 +18,7 @@ export default {
 
     return fetch(this.baseURL + path, requestOptions).then((response) => {
       if (response.ok) {
-        snackbar.toggleSnackbar({
+        store.toggleSnackbar({
           message: "Successful",
           status: "success",
           timeout: 3000,
@@ -28,14 +28,19 @@ export default {
           .then((result) => (result ? JSON.parse(result) : ""));
       } else {
         if (response.status < 500 || response.status >= 400) {
-          snackbar.toggleSnackbar({
+          if (response.status === 401) {
+            localStorage.removeItem("token");
+            store.isLoggedIn = false;
+            this.$router.push("/login");
+          }
+          store.toggleSnackbar({
             message: "client error ...",
             status: "error",
             timeout: 3000,
           });
         }
         if (response.status >= 500) {
-          snackbar.toggleSnackbar({
+          store.toggleSnackbar({
             message: "server error ...",
             status: "error",
             timeout: 3000,

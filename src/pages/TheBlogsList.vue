@@ -1,114 +1,123 @@
 <template>
-  <div>
-    <v-text-field
-      class="mb-4"
-      label="Title"
-      v-model="title"
-      variant="outlined"
-      required
-      bg-color="white"
-    ></v-text-field>
-    <v-text-field
-      class="mb-4"
-      label="Summary"
-      v-model="summary"
-      variant="outlined"
-      required
-      bg-color="white"
-    ></v-text-field>
-    <ckeditor
-      v-model="editorData"
-      :editor="editor"
-      :config="editorConfig"
-    ></ckeditor>
-    <v-row class="mt-4">
-      <v-col sm="12" md="6">
-        <v-file-input
-          clearable
-          v-model="cover"
-          prepend-icon="mdi-image"
-          accept="image/*"
-          label="Cover"
-          variant="outlined"
-          bg-color="white"
-        ></v-file-input>
-      </v-col>
-      <v-col cols="12" sm="12" md="6">
-        <v-file-input
-          clearable
-          v-model="video"
-          prepend-icon="mdi-video"
-          accept="video/*"
-          label="video"
-          variant="outlined"
-          bg-color="white"
-        ></v-file-input>
-      </v-col>
-    </v-row>
-    <v-btn
-      class="full-width mt-4"
-      v-bind="{ loading }"
-      color="primary"
-      @click="submit"
-    >
-      submit
-    </v-btn>
-  </div>
+  <v-table fixed-header height="100%">
+    <thead>
+      <tr>
+        <th v-for="header in headers" :key="header" class="text-left">
+          {{ header }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="blog in blogs" :key="blog.id">
+        <td v-for="(value, key, index) in blog" :key="index">
+          <v-img
+            v-if="key === 'cover'"
+            size="x-large"
+            color="secondary"
+            class="pa-4"
+            :src="value"
+          ></v-img>
+          <a v-else-if="key === 'video'" :href="value" target="_blank">{{
+            value
+          }}</a>
+          <span v-else-if="key === 'date_created'">
+            {{ convertToShamsi(value) }}
+          </span>
+          <v-icon
+            v-else-if="typeof value == 'boolean'"
+            :icon="value === true ? 'mdi-check' : 'mdi-window-close'"
+            :color="value === true ? 'success' : 'error'"
+          ></v-icon>
+          <span v-else
+            >{{ value?.toString().substring(0, 40) }}
+            {{ value.length >= 40 ? "..." : "" }}
+          </span>
+        </td>
+        <td>
+          <v-btn
+            class="ma-4"
+            icon="mdi-pencil"
+            color="info"
+            size="small"
+            variant="outlined"
+            :loading="loading"
+            @click="editBlog"
+          ></v-btn>
+          <v-btn
+            class="ma-4"
+            icon="mdi-delete"
+            color="error"
+            size="small"
+            variant="outlined"
+            :loading="loading"
+            @click="toggleModal(blog.id)"
+          ></v-btn>
+        </td>
+      </tr>
+    </tbody>
+  </v-table>
+  <BaseConfirmModal
+    :dialog="isOpen"
+    @confirm="deleteBlog"
+    @close="toggleModal"
+  />
 </template>
 
 <script setup>
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { fetchData } from "../helpers/functions";
-import { ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import { useRequest } from "../store/request";
 import { useStore } from "../store";
+import { convertToShamsi } from "../helpers/text.js";
+import BaseConfirmModal from "../components/ui/overlay/BaseConfirmModal.vue";
 
+const request = useRequest();
 const store = useStore();
 const loading = ref(false);
+const isOpen = ref(false);
+const selectedId = ref([]);
+let blogs = ref([]);
+let headers = reactive([]);
 
-const title = ref("");
-const summary = ref("");
-let cover = ref([]);
-let video = ref([]);
-const editor = ClassicEditor;
-const editorData = ref("<p>متن بلاگ را در اینجا تایپ کنید</p>");
-const editorConfig = {
-  language: {
-    ui: "en",
-    content: "ar",
-    inputView: {
-      height: "200px",
-    },
-  },
-};
-
-const submit = async function () {
+const getBlogs = async function () {
   loading.value = true;
-  let body = new FormData();
-  body.append("cover", cover.value[0]);
-  body.append("title", title.value);
-  body.append("summary", summary.value);
-  body.append("description", editorData.value);
-  if (video.value[0]) {
-    body.append("video", video.value[0]);
-  }
-
-  await fetchData({ url: "/blog/", method: "POST", body })
-    .then(() => {
-      title.value = "";
-      summary.value = "";
-      editorData.value = "";
-      cover.value = "";
-      video.value = "";
+  blogs.value = [];
+  request
+    .fetchData({
+      url: "/blog/",
+      params: { category: store.categories[0].value },
     })
-    .catch((error) => {
-      store.toggleSnackbar({ status: "error", message: error });
+
+    .then((response) => {
+      for (const item in response.result[0]) {
+        headers.push(item);
+      }
+      blogs.value = response.result;
     })
     .finally(() => (loading.value = false));
 };
-</script>
 
-<style>
-.ck-editor__editable_inline {
-  min-height: 200px;
-}
-</style>
+const deleteBlog = async function () {
+  loading.value = true;
+  request
+    .fetchData({
+      url: `/blog/${selectedId.value}/`,
+      method: "DELETE",
+    })
+    .then(() => {
+      blogs.value = blogs.value.filter((item) => item.id !== selectedId.value);
+    })
+    .finally(() => (loading.value = false));
+};
+
+const toggleModal = function (id) {
+  if (id) {
+    selectedId.value = id;
+  }
+  isOpen.value = !isOpen.value;
+};
+
+//lifecycles
+onMounted(() => {
+  getBlogs();
+});
+</script>

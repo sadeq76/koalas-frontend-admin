@@ -84,7 +84,7 @@ import { useTheme } from "vuetify";
 import { useRouter } from "vue-router";
 
 //components
-import BaseSnackbar from "./components/popup/BaseSnackbar.vue";
+import BaseSnackbar from "./components/ui/overlay/BaseSnackbar.vue";
 
 const router = useRouter();
 
@@ -103,12 +103,6 @@ const toggleTheme = () =>
 
 const items = [
   {
-    title: "Dashboard",
-    value: "dashboard",
-    icon: "mdi-home",
-    path: "/",
-  },
-  {
     title: "Customers",
     value: "customer",
     icon: "mdi-account",
@@ -126,8 +120,8 @@ const items = [
       },
       {
         title: "List of products",
-        value: "products-list",
-        path: "/products-list",
+        value: "products",
+        path: "/products",
       },
     ],
   },
@@ -143,8 +137,8 @@ const items = [
       },
       {
         title: "List of blogs",
-        value: "blogs-list",
-        path: "/blogs-list",
+        value: "blogs",
+        path: "/blogs",
       },
     ],
   },
@@ -152,13 +146,13 @@ const items = [
     title: "Orders",
     value: "order",
     icon: "mdi-clipboard-list",
-    path: "/orders-list",
+    path: "/orders",
   },
   {
     title: "Tickets",
     value: "ticket",
     icon: "mdi-ticket-account",
-    path: "/ticket-list",
+    path: "/tickets",
   },
 ];
 const goToPage = function (path) {
