@@ -1,16 +1,12 @@
 export const statusTitle = (status) => {
-  return status === "done"
-    ? "انجام شده"
-    : status === "sent"
+  return status === "Sent"
     ? "ارسال شده"
     : status === "InProgress"
     ? "در حال آماده سازی"
     : "لغو شده";
 };
 export const statusColor = (status) => {
-  return status === "done"
-    ? "success"
-    : status === "sent"
+  return status === "Sent"
     ? "info"
     : status === "InProgress"
     ? "warning"

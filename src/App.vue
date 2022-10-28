@@ -16,10 +16,6 @@
         <v-toolbar-title>{{
           $route.name?.toUpperCase().replace("-", " ")
         }}</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn @click="toggleTheme" :icon="themeIcon"></v-btn>
       </v-app-bar>
       <v-navigation-drawer
         v-if="$route.path !== '/login'"
@@ -79,12 +75,11 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
-import { useTheme } from "vuetify";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 //components
-import BaseSnackbar from "./components/ui/overlay/BaseSnackbar.vue";
+import BaseSnackbar from "./components/overlay/BaseSnackbar.vue";
 
 const router = useRouter();
 
@@ -92,67 +87,18 @@ const router = useRouter();
 const drawer = ref(false);
 let open = ref(["blog", "product"]);
 
-const theme = useTheme();
-const themeIcon = computed(() =>
-  theme.global.current.value.dark ? "mdi-white-balance-sunny" : "mdi-moon-full"
-);
-const toggleTheme = () =>
-  (theme.global.name.value = theme.global.current.value.dark
-    ? "light"
-    : "dark");
-
 const items = [
   {
-    title: "Customers",
-    value: "customer",
-    icon: "mdi-account",
-    path: "/customers",
-  },
-  {
-    title: "Products",
-    value: "product",
+    title: "Create product",
+    value: "create-product",
     icon: "mdi-coffee",
-    subs: [
-      {
-        title: "Create product",
-        value: "create-product",
-        path: "/create-product",
-      },
-      {
-        title: "List of products",
-        value: "products",
-        path: "/products",
-      },
-    ],
+    path: "/create-product",
   },
   {
-    title: "Blogs",
-    value: "blog",
+    title: "Create blog",
+    value: "create-blog",
     icon: "mdi-sticker",
-    subs: [
-      {
-        title: "Create blog",
-        value: "create-blog",
-        path: "/create-blog",
-      },
-      {
-        title: "List of blogs",
-        value: "blogs",
-        path: "/blogs",
-      },
-    ],
-  },
-  {
-    title: "Orders",
-    value: "order",
-    icon: "mdi-clipboard-list",
-    path: "/orders",
-  },
-  {
-    title: "Tickets",
-    value: "ticket",
-    icon: "mdi-ticket-account",
-    path: "/tickets",
+    path: "/create-blog",
   },
 ];
 const goToPage = function (path) {

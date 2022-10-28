@@ -105,7 +105,7 @@ const sendOTP = async function () {
         store.isLoggedIn = true;
         localStorage.setItem("token", response.token);
         router.push({
-          name: "customers",
+          name: "create-product",
         });
       } else {
         store.toggleSnackbar({ status: "error", message: "You are not admin" });
