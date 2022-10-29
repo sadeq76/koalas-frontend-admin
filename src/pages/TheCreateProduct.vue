@@ -114,6 +114,7 @@ const submit = async function () {
     .then(() => {
       title.value = "";
       price.value = "";
+      qty.value = "";
       category.value = "";
       description.value = "";
       image.value = "";
