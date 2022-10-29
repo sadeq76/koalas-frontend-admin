@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="mt-4">
-      <v-col cols="12" sm="12" md="6">
+      <v-col cols="12" sm="12" md="4">
         <v-file-input
           clearable
           v-model="image"
@@ -12,7 +12,7 @@
           bg-color="white"
         ></v-file-input>
       </v-col>
-      <v-col cols="12" sm="12" md="6">
+      <v-col cols="12" sm="12" md="4">
         <v-text-field
           class="mb-4"
           label="Title"
@@ -21,6 +21,17 @@
           required
           bg-color="white"
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" sm="12" md="4">
+        <v-file-input
+          class="mb-4"
+          label="Qty"
+          v-model="qty"
+          variant="outlined"
+          required
+          bg-color="white"
+          type="number"
+        ></v-file-input>
       </v-col>
       <v-col cols="12" sm="12" md="6">
         <v-text-field
@@ -83,6 +94,7 @@ const loading = ref(false);
 
 const title = ref("");
 const price = ref("");
+const qty = ref(0);
 const category = ref("");
 const description = ref("");
 let image = ref([]);
@@ -93,6 +105,7 @@ const submit = async function () {
   body.append("image", image.value[0]);
   body.append("title", title.value);
   body.append("price", persianToEnglish(price.value));
+  body.append("qty", qty.value);
   body.append("category", category.value);
   body.append("description", description.value);
 

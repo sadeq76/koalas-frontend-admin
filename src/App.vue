@@ -84,7 +84,7 @@ import BaseSnackbar from "./components/overlay/BaseSnackbar.vue";
 const router = useRouter();
 
 // reactive state
-const drawer = ref(false);
+const drawer = ref(true);
 let open = ref(["blog", "product"]);
 
 const items = [
