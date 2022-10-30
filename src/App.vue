@@ -92,7 +92,7 @@ const items = [
     title: "Create product",
     value: "create-product",
     icon: "mdi-coffee",
-    path: "/create-product",
+    path: "/",
   },
   {
     title: "Create blog",

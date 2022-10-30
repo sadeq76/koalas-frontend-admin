@@ -23,7 +23,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" sm="12" md="4">
-        <v-file-input
+        <v-text-field
           class="mb-4"
           label="Qty"
           v-model="qty"
@@ -31,7 +31,7 @@
           required
           bg-color="white"
           type="number"
-        ></v-file-input>
+        ></v-text-field>
       </v-col>
       <v-col cols="12" sm="12" md="6">
         <v-text-field
